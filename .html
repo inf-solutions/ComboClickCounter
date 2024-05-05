@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Counter</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Press Start 2P', cursive;
+            position: relative;
+            height: 100vh;
+            background-color: transparent; /* Remove the background color */
+            color: white; /* Default font color */
+        }
+        .counter {
+            font-size: 16px; /* Adjust the font size as needed */
+            position: absolute;
+            z-index: 1000; /* Ensure the counter is on top of other elements */
+            opacity: 0.8;
+            animation: explode 0.25s ease-in reverse; /* Particle animation */
+        }
+        .particle {
+            position: absolute;
+            background-color: #ff0; /* Default particle color */
+            width: 4px; /* Particle size */
+            height: 4px;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: explode 0.5s ease backwards; /* Particle animation */
+        }
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(20);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let count = 0;
+        let colorMap = {
+            5: 'red',
+            10: 'orange',
+            15: 'yellow',
+            20: 'purple',
+            25: 'pink',
+            30: 'magenta',
+            35: 'blue',
+            40: 'cyan',
+            45: 'turquoise',
+            50: 'green',
+            55: 'lime',
+            60: 'brown',
+            65: 'violet',
+            70: 'silver',
+            75: 'gold',
+            80: 'maroon',
+            85: 'dark blue',
+            90: 'lavender',
+            95: 'tomato',
+            100: 'black',
+        };
+        let counterContainer = document.createElement('div'); // Container for counters
+        counterContainer.style.position = 'absolute'; // Ensure the container stays in place
+        document.body.appendChild(counterContainer);
+
+        document.addEventListener('click', function(event) {
+            count++;
+            let prevColor = getColor(count - 1); // Get the previous color
+            let nextColor = getColor(count); // Get the next color
+            createCounter(event.clientX, event.clientY, count, nextColor);
+            if (count % 5 === 0) { // Check if the count is a multiple of 5
+                createParticles(event.clientX, event.clientY, nextColor);
+            }
+        });
+
+        function createCounter(mouseX, mouseY, number, color) {
+            let counter = document.createElement('div');
+            counter.textContent = number;
+            counter.classList.add('counter');
+            counter.style.left = mouseX + 20 + 'px'; // Move the counter a bit further away
+            counter.style.top = mouseY + 20 + 'px';
+            counter.style.color = color;
+            counterContainer.appendChild(counter);
+            setTimeout(() => {
+                counterContainer.removeChild(counter);
+            }, 1000); // Remove the counter after 1 second
+        }
+
+        function createParticles(x, y, color) {
+            // Create particles
+            for (let i = 0; i < 20; i++) {
+                let particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.backgroundColor = color; // Set particle color
+                document.body.appendChild(particle);
+            }
+            // Remove particles after animation
+            setTimeout(() => {
+                document.querySelectorAll('.particle').forEach(particle => {
+                    particle.remove();
+                });
+            }, 500);
+        }
+
+        function getColor(count) {
+            for (let num = Object.keys(colorMap).length; num > 0; num--) {
+                if (count >= parseInt(Object.keys(colorMap)[num - 1])) {
+                    return colorMap[Object.keys(colorMap)[num - 1]];
+                }
+            }
+            return 'white'; // Default color
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</body>
+</html>
